@@ -24,29 +24,117 @@ Trong thế giới mã hóa, chúng ta có hai loại chính:
 ## 3. Ý tưởng cốt lõi: Ví dụ về "Pha màu sơn"
 Để hiểu cách Diffie-Hellman hoạt động trước khi đi vào các con số, hãy xem ví dụ kinh điển về việc pha màu sơn dưới đây:
 
-```rust
-[Alice]                                                        [Bob]
-   │                                                             │
-   ├─────────── Chọn chung một màu sơn gốc: VÀNG ───────────────┤ (Công khai)
-   │                                                             │
-   ├─ Chọn màu bí mật: ĐỎ                       Chọn màu bí mật: XANH DƯƠNG
-   │                                                             │
-   ├─ Trộn: Vàng + Đỏ = CAM                 Trộn: Vàng + Xanh = XANH LÁ
-   │                                                             │
-   ├── Gửi CAM ──────────────────────────────────>               │ (Công khai)
-   │               <───────────────────────────── Gửi XANH LÁ ───┤
-   │                                                             │
-   ├─ Trộn tiếp:                            Trộn tiếp:            │
-   │  Xanh lá + Đỏ (bí mật)                 Cam + Xanh dương (bí mật)
-   │  = NÂU ĐẤT                             = NÂU ĐẤT            │
-   ▼                                                             ▼
-[Khóa chung cuối cùng]                                 [Khóa chung cuối cùng]
-```
-
-**Tại sao cách này an toàn?**
-*   Kẻ nghe lén đứng ở giữa chỉ nhìn thấy: Màu gốc (Vàng), và hai màu đã pha được gửi đi (Cam và Xanh Lá).
-*   Trong thực tế, việc tách một màu đã pha (như Cam) để tìm lại màu gốc ban đầu (Đỏ) là cực kỳ khó (đây gọi là **hàm một chiều**).
-*   Cuối cùng, cả Alice và Bob đều có chung màu **Nâu Đất** mà kẻ nghe lén không cách nào tạo ra được vì hắn thiếu hai màu bí mật ban đầu.
+<table style="width: 100%; border-collapse: collapse; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Arial, sans-serif; font-size: 14px; margin: 25px 0; background-color: #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0;">
+  <thead>
+    <tr style="background-color: #1e293b; color: #f8fafc;">
+      <th style="width: 38%; padding: 15px; text-align: left; border-bottom: 2px solid #0f172a;">Phía Alice (Bảo mật)</th>
+      <th style="width: 24%; padding: 15px; text-align: center; border-bottom: 2px solid #0f172a; background-color: #991b1b;">Kênh truyền công khai<br><span style="font-size: 11px; font-weight: normal; opacity: 0.9;">(Bị nghe lén)</span></th>
+      <th style="width: 38%; padding: 15px; text-align: right; border-bottom: 2px solid #0f172a;">Phía Bob (Bảo mật)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- Bước 1: Thống nhất tham số -->
+    <tr style="border-bottom: 1px solid #f1f5f9;">
+      <td style="padding: 15px; vertical-align: middle;">
+        <strong>Thống nhất tham số chung:</strong><br>
+        <span style="color: #64748b;">Số nguyên tố p và phần tử sinh g</span>
+      </td>
+      <td style="padding: 15px; text-align: center; vertical-align: middle; background-color: #fffbeb; font-weight: bold; color: #b45309; border-left: 1px solid #fef3c7; border-right: 1px solid #fef3c7;">
+        $g$, $p$ công khai
+      </td>
+      <td style="padding: 15px; text-align: right; vertical-align: middle;">
+        &nbsp;
+      </td>
+    </tr>
+    <!-- Bước 2: Chọn khóa riêng -->
+    <tr style="border-bottom: 1px solid #f1f5f9; background-color: #f8fafc;">
+      <td style="padding: 15px; vertical-align: middle;">
+        Chọn khóa riêng ngẫu nhiên:<br>
+        <span style="color: #0f172a; font-weight: bold; font-family: 'Courier New', monospace; font-size: 16px;">a</span>
+      </td>
+      <td style="padding: 15px; text-align: center; vertical-align: middle; background-color: #f8fafc; border-left: 1px solid #f1f5f9; border-right: 1px solid #f1f5f9;">
+        &nbsp;
+      </td>
+      <td style="padding: 15px; text-align: right; vertical-align: middle;">
+        Chọn khóa riêng ngẫu nhiên:<br>
+        <span style="color: #0f172a; font-weight: bold; font-family: 'Courier New', monospace; font-size: 16px;">b</span>
+      </td>
+    </tr>
+    <!-- Bước 3: Tính khóa công khai -->
+    <tr style="border-bottom: 1px solid #f1f5f9;">
+      <td style="padding: 15px; vertical-align: middle;">
+        Tính khóa công khai A:<br>
+        <span style="font-family: 'Courier New', monospace; font-size: 15px; font-weight: bold; color: #0284c7;">A = g<sup>a</sup> mod p</span>
+      </td>
+      <td style="padding: 15px; text-align: center; vertical-align: middle; background-color: #ffffff; border-left: 1px solid #f1f5f9; border-right: 1px solid #f1f5f9;">
+        &nbsp;
+      </td>
+      <td style="padding: 15px; text-align: right; vertical-align: middle;">
+        Tính khóa công khai B:<br>
+        <span style="font-family: 'Courier New', monospace; font-size: 15px; font-weight: bold; color: #0284c7;">B = g<sup>b</sup> mod p</span>
+      </td>
+    </tr>
+    <!-- Bước 4: Gửi A -->
+    <tr style="border-bottom: 1px solid #f1f5f9; background-color: #f8fafc;">
+      <td style="padding: 15px; vertical-align: middle;">
+        &nbsp;
+      </td>
+      <td style="padding: 12px 15px; text-align: center; vertical-align: middle; background-color: #fffbeb; border-left: 1px solid #fef3c7; border-right: 1px solid #fef3c7;">
+        <div style="font-size: 11px; color: #78350f; font-weight: 500; margin-bottom: 2px;">Gửi khóa công khai A</div>
+        <div style="font-size: 20px; color: #0284c7; line-height: 1; margin-bottom: 2px;">➔</div>
+        <div style="font-family: 'Courier New', monospace; font-weight: bold; color: #0f172a; font-size: 15px;">A</div>
+      </td>
+      <td style="padding: 15px; text-align: right; vertical-align: middle;">
+        Nhận được khóa <span style="font-family: 'Courier New', monospace; font-weight: bold; color: #0284c7;">A</span> từ Alice
+      </td>
+    </tr>
+    <!-- Bước 5: Gửi B -->
+    <tr style="border-bottom: 1px solid #f1f5f9;">
+      <td style="padding: 15px; vertical-align: middle;">
+        Nhận được khóa <span style="font-family: 'Courier New', monospace; font-weight: bold; color: #0284c7;">B</span> từ Bob
+      </td>
+      <td style="padding: 12px 15px; text-align: center; vertical-align: middle; background-color: #fffbeb; border-left: 1px solid #fef3c7; border-right: 1px solid #fef3c7;">
+        <div style="font-size: 11px; color: #78350f; font-weight: 500; margin-bottom: 2px;">Gửi khóa công khai B</div>
+        <div style="font-size: 20px; color: #0284c7; line-height: 1; margin-bottom: 2px;">◀</div>
+        <div style="font-family: 'Courier New', monospace; font-weight: bold; color: #0f172a; font-size: 15px;">B</div>
+      </td>
+      <td style="padding: 15px; text-align: right; vertical-align: middle;">
+        &nbsp;
+      </td>
+    </tr>
+    <!-- Bước 6: Tính khóa chung -->
+    <tr style="border-bottom: 2px solid #e2e8f0; background-color: #f8fafc;">
+      <td style="padding: 15px; vertical-align: top; line-height: 1.6;">
+        <strong>Tính khóa chung K:</strong><br>
+        <span style="font-family: 'Courier New', monospace; font-size: 14px; color: #334155;">
+          K = B<sup>a</sup> mod p<br>
+          K = (g<sup>b</sup>)<sup>a</sup> mod p<br>
+          K = <strong>g<sup>ab</sup> mod p</strong>
+        </span>
+      </td>
+      <td style="padding: 15px; text-align: center; vertical-align: middle; background-color: #f8fafc; border-left: 1px solid #f1f5f9; border-right: 1px solid #f1f5f9;">
+        &nbsp;
+      </td>
+      <td style="padding: 15px; text-align: right; vertical-align: top; line-height: 1.6;">
+        <strong>Tính khóa chung K:</strong><br>
+        <span style="font-family: 'Courier New', monospace; font-size: 14px; color: #334155;">
+          K = A<sup>b</sup> mod p<br>
+          K = (g<sup>a</sup>)<sup>b</sup> mod p<br>
+          K = <strong>g<sup>ab</sup> mod p</strong>
+        </span>
+      </td>
+    </tr>
+    <!-- Bước cuối: Kết quả -->
+    <tr style="background-color: #f0fdf4;">
+      <td colspan="3" style="padding: 20px; text-align: center; vertical-align: middle; border-top: 2px solid #bbf7d0;">
+        <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: #166534; font-weight: bold; margin-bottom: 4px;">Kết quả thiết lập thành công</div>
+        <div style="font-size: 18px; font-weight: bold; color: #14532d; font-family: 'Courier New', monospace;">
+          [ KHÓA CHUNG BÍ MẬT K = g<sup>ab</sup> mod p ]
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 ---
 
