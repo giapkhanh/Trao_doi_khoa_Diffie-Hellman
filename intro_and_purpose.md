@@ -169,7 +169,7 @@ Trong khi đó, kẻ nghe lén trên đường truyền chỉ thu thập đượ
 
 ---
 
-## 5. Đánh giá và Ứng dụng
+## 5. Vai trò, ứng dụng thực tế
 Diffie-Hellman là một giải pháp tối ưu cho bài toán phân phối khóa nhờ tính đơn giản nhưng chặt chẽ về mặt toán học. Bằng cách biến việc trao đổi thông tin thành các phép tính lũy thừa một chiều, giao thức này giúp việc chia sẻ bí mật trên môi trường Internet trở nên an toàn.
 
 Ngày nay, Diffie-Hellman là thành phần nền tảng được tích hợp trong hầu hết các giao thức bảo mật mạng phổ biến như HTTPS (thông qua SSL/TLS), SSH (truy cập máy chủ từ xa), và các kết nối VPN.
