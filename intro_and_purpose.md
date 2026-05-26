@@ -1,28 +1,28 @@
-# Giới Thiệu Về Giao Thức Trao Đổi Khóa Diffie-Hellman
+# Tìm Hiểu Về Giao Thức Trao Đổi Khóa Diffie-Hellman
 
-## 1. Diffie-Hellman là gì?
-Hãy tưởng tượng bạn và một người bạn muốn trò chuyện bí mật bằng một chiếc hộp có khóa. Nhưng hai người ở rất xa nhau và chưa từng gặp mặt để đưa nhau chìa khóa. Làm thế nào để cả hai có được một chiếc chìa khóa giống hệt nhau mà không cần gửi nó qua bưu điện (nơi thư có thể bị bóc trộm)?
+## 1. Đặt vấn đề và Khái niệm
 
-**Diffie-Hellman (DH)** là phương thức giải quyết vấn đề này. 
+Giả sử có 2 người bạn muốn trò chuyện bí mật bằng một chiếc hộp có khóa. Nhưng hai người ở rất xa nhau và chưa từng gặp mặt để đưa nhau chìa khóa. Làm thế nào để cả hai có được một chiếc chìa khóa giống hệt nhau mà không cần gửi nó công khai qua bưu điện?
 
-Được phát minh bởi Whitfield Diffie và Martin Hellman vào năm 1976, đây là một giao thức mã hóa cho phép hai bên **tự thiết lập một khóa bí mật chung** (shared secret key) thông qua một kênh truyền thông không an toàn (như Internet công cộng) mà không cần phải gửi chính chiếc khóa đó cho nhau.
+Giao thức **Diffie-Hellman** chính là phương thức giải quyết vấn đề này.
 
----
-
-## 2. Mục đích của Diffie-Hellman
-Trong thế giới mã hóa, chúng ta có hai loại chính:
-*   **Mã hóa đối xứng (Symmetric Encryption):** Rất nhanh và an toàn, nhưng đòi hỏi hai bên phải có chung một chiếc khóa từ trước.
-*   **Mã hóa bất đối xứng (Asymmetric Encryption):** Cho phép trao đổi thông tin an toàn không cần gặp trước, nhưng tốc độ xử lý lại rất chậm.
-
-**Mục đích của Diffie-Hellman:** 
-Đóng vai trò là "cầu nối" hoàn hảo. Nó tận dụng tính linh hoạt của mã hóa bất đối xứng để giúp hai bên tạo ra một chiếc khóa chung. Sau khi đã có khóa chung này, họ sẽ chuyển sang dùng mã hóa đối xứng để truyền dữ liệu cực nhanh.
-
-> **Tóm lại:** Diffie-Hellman không dùng để mã hóa trực tiếp nội dung tin nhắn, mục đích duy nhất của nó là **thống nhất một chiếc khóa chung** giữa hai bên một cách an toàn.
+Được phát minh bởi **Whitfield Diffie** và **Martin Hellman** vào năm 1976, đây là một giao thức mã hóa cho phép hai bên tự thiết lập một khóa bí mật chung thông qua một kênh truyền thông không an toàn (như Internet công cộng) mà không cần phải gửi chính chiếc khóa đó cho nhau.
 
 ---
 
-## 3. Ý tưởng cốt lõi: Ví dụ về "Pha màu sơn"
-Để hiểu cách Diffie-Hellman hoạt động trước khi đi vào các con số, hãy xem ví dụ kinh điển về việc pha màu sơn dưới đây:
+## 2. Mục đích của giao thức
+Trong mật mã học, các thuật toán thường được chia làm hai loại:
+* **Mã hóa đối xứng:** Tốc độ xử lý nhanh và an toàn, nhưng bắt buộc hai bên phải sở hữu chung một khóa từ trước.
+* **Mã hóa bất đối xứng:** Cho phép giao tiếp an toàn mà không cần gặp nhau để chia sẻ khóa, nhưng tốc độ xử lý chậm và tốn tài nguyên.
+
+Diffie-Hellman ra đời để kết hợp ưu điểm của cả hai phương pháp trên. Giao thức này đóng vai trò thiết lập một khóa chung ban đầu dựa trên cơ chế bất đối xứng. Khi đã có được khóa chung này, hai bên sẽ chuyển sang dùng mã hóa đối xứng để truyền dữ liệu thực tế nhằm đạt tốc độ tối đa.
+
+Giao thức này không dùng để mã hóa trực tiếp nội dung tin nhắn, mà mục đích duy nhất của nó là **thống nhất một chiếc khóa chung** giữa hai bên một cách an toàn.
+
+---
+
+## 3. Quy trình thiết lập khóa
+Quy trình tính toán và trao đổi thông tin giữa Alice và Bob được thực hiện trực tiếp qua các bước dưới đây:
 
 <table style="width: 100%; border-collapse: collapse; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Arial, sans-serif; font-size: 14px; margin: 25px 0; background-color: #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0;">
   <thead>
@@ -64,14 +64,14 @@ Trong thế giới mã hóa, chúng ta có hai loại chính:
     <tr style="border-bottom: 1px solid #f1f5f9;">
       <td style="padding: 15px; vertical-align: middle;">
         Tính khóa công khai A:<br>
-        <span style="font-family: 'Courier New', monospace; font-size: 15px; font-weight: bold; color: #0284c7;">A = g<sup>a</sup> mod p</span>
+        <span style="font-family: 'Courier New', monospace; font-size: 15px; font-weight: bold; color: #0284c7;">A = g<sup>a</sup> (mod p)</span>
       </td>
       <td style="padding: 15px; text-align: center; vertical-align: middle; background-color: #ffffff; border-left: 1px solid #f1f5f9; border-right: 1px solid #f1f5f9;">
         &nbsp;
       </td>
       <td style="padding: 15px; text-align: right; vertical-align: middle;">
         Tính khóa công khai B:<br>
-        <span style="font-family: 'Courier New', monospace; font-size: 15px; font-weight: bold; color: #0284c7;">B = g<sup>b</sup> mod p</span>
+        <span style="font-family: 'Courier New', monospace; font-size: 15px; font-weight: bold; color: #0284c7;">B = g<sup>b</sup> (mod p)</span>
       </td>
     </tr>
     <!-- Bước 4: Gửi A -->
@@ -107,9 +107,9 @@ Trong thế giới mã hóa, chúng ta có hai loại chính:
       <td style="padding: 15px; vertical-align: top; line-height: 1.6;">
         <strong>Tính khóa chung K:</strong><br>
         <span style="font-family: 'Courier New', monospace; font-size: 14px; color: #334155;">
-          K = B<sup>a</sup> mod p<br>
-          K = (g<sup>b</sup>)<sup>a</sup> mod p<br>
-          K = <strong>g<sup>ab</sup> mod p</strong>
+          K = B<sup>a</sup> (mod p)<br>
+          K = (g<sup>b</sup>)<sup>a</sup> (mod p)<br>
+          K = <strong>g<sup>ab</sup> (mod p)</strong>
         </span>
       </td>
       <td style="padding: 15px; text-align: center; vertical-align: middle; background-color: #f8fafc; border-left: 1px solid #f1f5f9; border-right: 1px solid #f1f5f9;">
@@ -118,9 +118,9 @@ Trong thế giới mã hóa, chúng ta có hai loại chính:
       <td style="padding: 15px; text-align: right; vertical-align: top; line-height: 1.6;">
         <strong>Tính khóa chung K:</strong><br>
         <span style="font-family: 'Courier New', monospace; font-size: 14px; color: #334155;">
-          K = A<sup>b</sup> mod p<br>
-          K = (g<sup>a</sup>)<sup>b</sup> mod p<br>
-          K = <strong>g<sup>ab</sup> mod p</strong>
+          K = A<sup>b</sup> (mod p)<br>
+          K = (g<sup>a</sup>)<sup>b</sup> (mod p)<br>
+          K = <strong>g<sup>ab</sup> (mod p)</strong>
         </span>
       </td>
     </tr>
@@ -129,7 +129,7 @@ Trong thế giới mã hóa, chúng ta có hai loại chính:
       <td colspan="3" style="padding: 20px; text-align: center; vertical-align: middle; border-top: 2px solid #bbf7d0;">
         <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: #166534; font-weight: bold; margin-bottom: 4px;">Kết quả thiết lập thành công</div>
         <div style="font-size: 18px; font-weight: bold; color: #14532d; font-family: 'Courier New', monospace;">
-          [ KHÓA CHUNG BÍ MẬT K = g<sup>ab</sup> mod p ]
+          [ KHÓA CHUNG BÍ MẬT K = g<sup>ab</sup> (mod p) ]
         </div>
       </td>
     </tr>
@@ -138,48 +138,38 @@ Trong thế giới mã hóa, chúng ta có hai loại chính:
 
 ---
 
-## 4. Giải thích Toán học một cách dễ hiểu
-Phép toán "pha màu" ở trên trong thế giới số được thực hiện thông qua **Phép chia lấy dư (Modulo)** và **Số mũ**.
+## 4. Cơ sở toán học của giao thức
 
-### Phép toán Modulo - "Chiếc đồng hồ một chiều"
-Trong toán học, $A \pmod p$ nghĩa là lấy $A$ chia cho $p$ và giữ lại phần dư. 
-*   *Ví dụ:* $17 \pmod{12} = 5$ (giống như 17 giờ chiều trên mặt đồng hồ 12 số thực chất là 5 giờ).
-*   **Tính chất một chiều:** Nếu biết $3^x \pmod{17} = 12$, việc tìm ra $x$ là cực kỳ khó khăn nếu các số lớn lên tới hàng trăm chữ số. Đây gọi là bài toán **Lôgarit rời rạc** – nền tảng bảo mật của Diffie-Hellman.
+Tính bảo mật của Diffie-Hellman dựa trên hai yếu tố toán học cốt lõi dưới đây.
 
-### Các bước tạo khóa bằng công thức
-Hãy xem các con số được "pha" như thế nào:
+### 4.1. Phép toán Modulo và tính chất hàm một chiều
 
-#### Bước 1: Thống nhất thông số công khai (Màu sơn chung)
-Alice và Bob đồng ý sử dụng hai số công khai:
-*   $p$: Một số nguyên tố rất lớn.
-*   $g$: Một số nguyên nhỏ (gọi là phần tử sinh).
-*(Ai cũng có thể biết hai số này).*
+Phép toán $A \pmod p$ có thể được hiểu đơn giản là phép chia lấy phần dư.
 
-#### Bước 2: Chọn khóa bí mật riêng (Màu sơn riêng)
-*   Alice chọn một số ngẫu nhiên $a$ (giữ bí mật cho riêng mình).
-*   Bob chọn một số ngẫu nhiên $b$ (giữ bí mật cho riêng mình).
+Trong mật mã học, phép toán này được sử dụng như một **hàm một chiều**:
+* **Tính toán theo chiều xuôi:** Nếu biết số mũ $a = 5$, cơ số $g = 3$, và số chia $p = 17$, máy tính chỉ mất ít thời gian để tính ra $A = 3^5 \pmod{17} = 5$.
+* **Tính toán theo chiều ngược lại:** Nếu chỉ biết kết quả $A = 5$, cơ số $g = 3$, và số chia $p = 17$, để tìm lại số mũ $a$ ban đầu thỏa mãn phương trình $3^a \pmod{17} = 5$, chúng ta bắt buộc phải thử sai từng trường hợp.
 
-#### Bước 3: Tính toán và trao đổi (Gửi màu đã pha)
-*   Alice tính khóa công khai của mình: 
-    $$A = g^a \pmod p$$
-    Sau đó gửi $A$ cho Bob.
-*   Bob tính khóa công khai của mình: 
-    $$B = g^b \pmod p$$
-    Sau đó gửi $B$ cho Alice.
+Khi áp dụng vào thực tế, số nguyên tố $p$ được chọn là một số cực kỳ lớn (thường dài hơn 600 chữ số). Với kích thước này, việc tìm ngược lại khóa riêng $a$ từ khóa công khai $A$ là bất khả thi đối với các máy tính hiện nay. Trong toán học, đây được gọi là **Bài toán Lôgarit rời rạc (Discrete Logarithm Problem)**.
 
-#### Bước 4: Tạo ra khóa chung cuối cùng
-Bây giờ, phép thuật toán học xảy ra:
-*   Alice nhận được $B$ từ Bob, cô ấy lũy thừa với số bí mật $a$ của mình:
-    $$K_{Alice} = B^a \pmod p = (g^b)^a \pmod p = g^{ab} \pmod p$$
-*   Bob nhận được $A$ từ Alice, anh ấy lũy thừa với số bí mật $b$ của mình:
-    $$K_{Bob} = A^b \pmod p = (g^a)^b \pmod p = g^{ab} \pmod p$$
+### 4.2. Tính chất giao hoán của phép lũy thừa
 
-Vì $(g^a)^b$ bằng $(g^b)^a$ (đều bằng $g^{ab}$), nên cuối cùng:
-$$K_{Alice} = K_{Bob} = K$$
+Yếu tố giúp Alice và Bob tính toán ra cùng một khóa chung $K$ nằm ở tính chất giao hoán cơ bản của lũy thừa:
+$$(g^a)^b = (g^b)^a = g^{ab}$$
 
-Hai bên đã có chung một số $K$ để làm khóa mã hóa mà không một ai ngoài giao lộ biết được khóa này.
+Dựa vào sơ đồ trao đổi ở phần 3:
+* Alice nhận khóa công khai $B = g^b \pmod p$ từ Bob. Sau đó, Alice tự tính khóa chung bằng cách nâng $B$ lên lũy thừa khóa riêng $a$ của mình:
+  $$K = B^a \pmod p = (g^b)^a \pmod p = g^{ab} \pmod p$$
+* Bob nhận khóa công khai $A = g^a \pmod p$ từ Alice. Bob tính khóa chung bằng cách nâng $A$ lên lũy thừa khóa riêng $b$ của mình:
+  $$K = A^b \pmod p = (g^a)^b \pmod p = g^{ab} \pmod p$$
+
+Cả hai người thực hiện các phép tính hoàn toàn độc lập với những mảnh thông tin khác nhau, nhưng về mặt toán học, kết quả cuối cùng thu được đều là $g^{ab} \pmod p$. 
+
+Trong khi đó, kẻ nghe lén trên đường truyền chỉ thu thập được các thông tin công khai $\{g, p, A, B\}$. Nếu không có khóa riêng $a$ của Alice hoặc $b$ của Bob, kẻ tấn công không thể nào tính ra được khóa chung $K$.
 
 ---
 
-## 5. Kết luận
-Diffie-Hellman là một giải pháp đơn giản nhưng tinh tế cho bài toán phân phối khóa. Bằng cách sử dụng các phép toán số mũ và chia lấy dư một chiều, nó biến việc chia sẻ bí mật qua môi trường không an toàn trở nên khả thi. Nó là nền tảng cho hầu hết các kết nối an toàn trên Internet hiện nay mà chúng ta dùng hàng ngày, như HTTPS hay giao thức bảo mật SSH.
+## 5. Đánh giá và Ứng dụng
+Diffie-Hellman là một giải pháp tối ưu cho bài toán phân phối khóa nhờ tính đơn giản nhưng chặt chẽ về mặt toán học. Bằng cách biến việc trao đổi thông tin thành các phép tính lũy thừa một chiều, giao thức này giúp việc chia sẻ bí mật trên môi trường Internet trở nên an toàn.
+
+Ngày nay, Diffie-Hellman là thành phần nền tảng được tích hợp trong hầu hết các giao thức bảo mật mạng phổ biến như HTTPS (thông qua SSL/TLS), SSH (truy cập máy chủ từ xa), và các kết nối VPN.
